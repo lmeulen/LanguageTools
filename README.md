@@ -4,7 +4,7 @@ This package contains several language tools.
 
 ## Document distance
 
-A package to determine the distance between different documents in a corpus.
+A class to determine the distance between different documents in a corpus.
 
 Related articless
 - [Finding related articles with TF-IDF and Python]()
