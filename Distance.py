@@ -7,7 +7,6 @@ import typing
 from nltk import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
-from nltk.translate.bleu_score import sentence_bleu
 
 
 class DocumentDistance:
@@ -77,11 +76,8 @@ class DocumentDistance:
         :param doc: The text to clean
         :return: cleaned text
         """
-        # To lower case
         doc = doc.lower()
-        # Unidecode
         doc = unidecode.unidecode(doc)
-        # Remove underscores and accents
         doc = doc.replace('_', ' ').replace("'", "")
         return doc
 
@@ -95,13 +91,8 @@ class DocumentDistance:
         :param words: Original wordlist
         :return: Cleaned wordlist
         """
-        # Remove stopwords and words shorter than 3 characters and is not a number
-        # print(words)
         words = [x for x in words if x not in self.stopwords and len(x) > 2 and not x.isnumeric()]
-        # print(words)
-        # Stemming
         words = [self.stemmer.stem(plural) for plural in words]
-        # print(words)
         return words
 
     def pre_proces_data(self,
@@ -126,7 +117,6 @@ class DocumentDistance:
             words = self.clean_word_list(words)
             bag_of_words.append(words)
             unique_words = unique_words.union(set(words))
-            # print("%3d : %5d " % (i, len(unique_words)))
         # Determine word occurences in each sentence for all words
         word_occurences = []
         sentence_lengths = []
@@ -157,7 +147,6 @@ class DocumentDistance:
             doc_count_per_word.pop(word)
             for sent in word_occurences:
                 sent.pop(word)
-        # print("      %5d " % (len(word_occurences[0])))
 
         return word_occurences, sentence_lengths, doc_count_per_word
 
@@ -237,7 +226,6 @@ class DocumentDistance:
             tfidf[word] = val * idfs[word]
         return tfidf
 
-    # https://www.geeksforgeeks.org/finding-the-frobenius-norm-of-a-given-matrix/
     def normalize(self,
                   tfidfs: typing.List[typing.Dict[str, float]]
                   ) -> typing.Dict[int, float]:
@@ -251,12 +239,11 @@ class DocumentDistance:
         for i in range(len(tfidfs)):
             vals = list(tfidfs[i].values())
             sumsq = 0
-            for i in range(len(vals)):
-                sumsq += pow(vals[i], 2)
+            for j in range(len(vals)):
+                sumsq += pow(vals[j], 2)
             norms.append(math.sqrt(sumsq))
         return norms
 
-    # https://www.geeksforgeeks.org/how-to-calculate-cosine-similarity-in-python/
     def calculate_distances(self,
                             tfidfs: typing.List[typing.Dict[str, float]]
                             ) -> None:
@@ -293,24 +280,19 @@ class DocumentDistance:
         docs = list(documents.values())
 
         word_occurence_per_doc, doc_lengths, doc_count_per_word = self.pre_proces_data(docs)
-        # print(word_occurence_per_doc)
-        # print(doc_lengths)
 
         # Calculate TF values
         tfs = []
         for i in range(len(word_occurence_per_doc)):
             tfs.append(self.compute_tf(word_occurence_per_doc[i], doc_lengths[i]))
-        # print(tfs)
 
         # Calculate IDF values
         idfs = self.compute_idf(doc_count_per_word, len(docs))
-        # print(idfs)
 
         # Calculate TF-IDF values
         tfidfs = []
         for i in range(len(tfs)):
             tfidfs.append(self.compute_tfidf(tfs[i], idfs))
-        # print(tfidfs)
 
         # Calculate distances
         self.calculate_distances(tfidfs)
@@ -323,7 +305,7 @@ class DocumentDistance:
         res = {k: v for k, v in sorted(res.items(), key=lambda item: item[1], reverse=True)}
         return res
 
-
+    
 def main() -> int:
     distance = DocumentDistance()
     distance.add_documents({10: 'the yellow man went out for a walk',
