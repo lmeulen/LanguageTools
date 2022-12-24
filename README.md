@@ -6,8 +6,8 @@ This package contains several language tools.
 
 A class to determine the distance between different documents in a corpus.
 
-Related articless
-- [Finding related articles with TF-IDF and Python]()
+Related articles
+- [Finding related articles with TF-IDF and Python](https://towardsdatascience.com/finding-related-articles-with-tf-idf-and-python-d6e1cd10f735?sk=4e7185f4de845392e99035d8c22751a5)
 
 Implementation
   - NaiveDistance.py : Implementaiton as discussed in my TDS article
@@ -23,3 +23,13 @@ Related articles
 
 Implementation
 - SummarizeText.py - Python class implementing the functionality
+
+## Parse Fixed Width File
+
+Parse a fixed width file to a list of dictionaries or a Pandas dataframe.
+
+Related article
+- [Parsing fixed width text files with Python]()
+
+Implementation
+- Parse_Fixed_Width_File.py
